@@ -120,10 +120,10 @@
                     "value": "true"
                 },
                 "BILLING": {
-                    "value": "$COGNITIVE_BILLING_ENDPOINT"
+                    "value": "$AVA_Cognitive_Endpoint"
                 },
                 "APIKEY": {
-                    "value": "COGNITIVE_API_KEY"
+                    "value": "$AVA_Cognitive_Service_Key"
                 },
                 "LAUNCHER_TYPE": {
                     "value": "avaBackend"

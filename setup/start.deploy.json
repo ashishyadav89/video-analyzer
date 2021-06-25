@@ -93,7 +93,7 @@
         }
     },
     "variables": {
-        "_artifactsLocation": "https://raw.githubusercontent.com/ashishyadav89/AVA_SPA/main/",
+        "_artifactsLocation": "https://raw.githubusercontent.com/Azure/video-analyzer/main/setup/",
         "managedIdentityName": "[concat(parameters('namePrefix'),'-deployment-identity-',uniqueString(parameters('resourceGroup')))]",
         "managedIdentityId": "[concat(subscription().id,'/resourceGroups/',parameters('resourceGroup'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', variables('managedIdentityName'))]",
         "simulatedDeviceName": "[concat(parameters('namePrefix'),'-iot-edge-device')]",
@@ -354,7 +354,7 @@
                     "scope": "Inner"
                 },
                 "parameters": {
-                    "_artifactsLocation": { "value": "https://raw.githubusercontent.com/Azure/video-analyzer/main/setup/" },
+                    "_artifactsLocation": { "value": "[variables('_artifactsLocation')]" },
                     "baseTime": { "value": "[parameters('baseTime')]" },
                     "managedIdentityId": { "value": "[variables('managedIdentityId')]" },
                     "hubName": { "value": "[reference('deploy-iot-resources').outputs.hubName.value]" },
