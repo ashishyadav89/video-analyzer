@@ -26,7 +26,7 @@
 az config set extension.use_dynamic_install=yes_without_prompt
 
 # download the deployment manifest file
-printf "downloading $DEPLOYMENT_MANIFEST_TEMPLATE_URL\n"
+printf "downloading $DEPLOYMENT_MANIFEST_TEMPLATE_URL\n"                     # the template is general-sample-setup.modules.json
 curl -s $DEPLOYMENT_MANIFEST_TEMPLATE_URL > deployment.json
 
 # update the values in the manifest
@@ -35,6 +35,9 @@ sed -i "s@\$AVA_PROVISIONING_TOKEN@${PROVISIONING_TOKEN}@g" deployment.json
 sed -i "s@\$VIDEO_OUTPUT_FOLDER_ON_DEVICE@${VIDEO_OUTPUT_FOLDER_ON_DEVICE}@g" deployment.json
 sed -i "s@\$VIDEO_INPUT_FOLDER_ON_DEVICE@${VIDEO_INPUT_FOLDER_ON_DEVICE}@g" deployment.json
 sed -i "s@\$APPDATA_FOLDER_ON_DEVICE@${APPDATA_FOLDER_ON_DEVICE}@g" deployment.json
+
+sed -i "s@\$AVA_Cognitive_Service_Key@${Cognitive_Service_Key}@g" deployment.json
+sed -i "s@\$AVA_Cognitive_Endpoint@${Cognitive_Endpoint}@g" deployment.json
 
 # Add a file to build env.txt file from
 >env.txt
