@@ -12,7 +12,7 @@
             "value": "Spatialanalysis1" 
         },
         "vmSize": {
-            "value": "Standard_NC6"
+            "value": "Standard_NC6_Promo"
         },
         "authenticationType": {
             "value": "password"
