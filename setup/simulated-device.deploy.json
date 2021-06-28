@@ -2,18 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "_artifactsLocation": {
+     /*   "_artifactsLocation": {
             "type": "string",
             "metadata": {
                 "description": "The remote location for resolving supporting files."
-            }
+            }  
         },
         "edgeDeviceConnectionString": {
             "type": "string",
             "metadata": {
                 "description": "The connection string that will be used to register the device with the IoT Hub."
             }
-        },
+        }, */
         "vmName": {
             "type": "string",
             "metadata": {
@@ -69,7 +69,7 @@
         }
     },
     "variables": {
-        "dcs": "[parameters('edgeDeviceConnectionString')]",
+      //  "dcs": "[parameters('edgeDeviceConnectionString')]",
         "nsgName": "[concat(parameters('vmName'),'-nsg-allow-ssh')]",
         "vnetName": "[concat(parameters('vmName'),'-vnet')]",
         "pipName": "[concat(parameters('vmName'),'-pip')]",
@@ -197,26 +197,26 @@
                     "computerName": "[parameters('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPasswordOrKey')]",
-                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                  //   "customData": "[variables('customData')]"
                 }
             }
         },
         {
-             "name": "Deploy NVIDIA Driver Extendion",
-             "type": "extensions",
-             "apiVersion": "2015-06-15",
-              "location": "<location>",
-               "dependsOn": [
-                             "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+             "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2015-06-15",
+            "name": "[concat(parameters('vmName'),'/NvidiaGpuDriverLinux')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                 "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
                              ],
-               "properties": {
-                                "publisher": "Microsoft.HpcCompute",
-                                  "type": "NvidiaGpuDriverWindows",
-                                 "typeHandlerVersion": "1.3",
-                                 "autoUpgradeMinorVersion": true,
-                                  "settings": {
-                                           }                               }
+            "properties": {
+                "publisher": "Microsoft.HpcCompute",
+                "type": "NvidiaGpuDriverLinux",
+                "typeHandlerVersion": "1.2",
+                "autoUpgradeMinorVersion": true,
+                "settings": {}
+            }
          },
         {
             "type": "Microsoft.Network/virtualNetworks",
