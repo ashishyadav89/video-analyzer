@@ -28,19 +28,19 @@ sudo systemctl restart docker
 
 # Install Azure IOT Edge
 
-curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > ./microsoft-prod.list
+# curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > ./microsoft-prod.list
 
-sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
+# sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
 
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+# curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 
-sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
+# sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
 
-sudo apt-get update
+# sudo apt-get update
 
-sudo apt-get install iotedge=1.0.9* libiothsm-std=1.0.9*
+# sudo apt-get install iotedge=1.0.9* libiothsm-std=1.0.9*
 
-sed -i  's/<ADD DEVICE CONNECTION STRING HERE>/fhgfhfkfffjg/g' /etc/iotedge/config.yaml
+# sed -i  's/<ADD DEVICE CONNECTION STRING HERE>/fhgfhfkfffjg/g' /etc/iotedge/config.yaml
 
-sudo systemctl restart iotedge
+# sudo systemctl restart iotedge
 
