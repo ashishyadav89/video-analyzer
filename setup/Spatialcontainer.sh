@@ -40,7 +40,7 @@ sudo apt-get update
 
 sudo apt-get install iotedge=1.0.9* libiothsm-std=1.0.9*
 
-sed -i \"s#\\(device_connection_string: \\).*#\\1\\\"', variables('dcs'), '\\\"#g\" /etc/iotedge/config.yaml \n   
+sed -i  's/<ADD DEVICE CONNECTION STRING HERE>/fhgfhfkfffjg/g' /etc/iotedge/config.yaml
 
 sudo systemctl restart iotedge
 
