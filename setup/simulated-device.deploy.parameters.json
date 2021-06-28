@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+            "value": "https://raw.githubusercontent.com/ashishyadav89/video-analyzer/dev/ashish/setup/" // TODO: Fill in parameter value
+        },
+        "edgeDeviceConnectionString": {
+            "value": "" // TODO: Fill in parameter value
+        },
+        "vmName": {
+            "value": "Spatialanalysis1" // TODO: Fill in parameter value
+        },
+        "vmSize": {
+            "value": "Standard_NC6"
+        },
+        "authenticationType": {
+            "value": "password"
+        },
+        "adminPasswordOrKey": {
+            "value": "12345@Million" // TODO: Fill in parameter value
+        },
+        "adminUsername": {
+            "value": "avaadmin"
+        },
+        "ubuntuOSVersion": {
+            "value": "18.04-LTS"
+        },
+        "resourceTags": {
+            "value": {
+                "sample": "azure-video-analyzer"
+            }
+        }
+    }
+}
