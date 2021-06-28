@@ -203,6 +203,22 @@
             }
         },
         {
+             "name": "Deploy NVIDIA Driver Extendion",
+             "type": "extensions",
+             "apiVersion": "2015-06-15",
+              "location": "<location>",
+               "dependsOn": [
+                             "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+                             ],
+               "properties": {
+                                "publisher": "Microsoft.HpcCompute",
+                                  "type": "NvidiaGpuDriverWindows",
+                                 "typeHandlerVersion": "1.3",
+                                 "autoUpgradeMinorVersion": true,
+                                  "settings": {
+                                           }                               }
+         },
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "comments": "This vnet will host the IoT Edge device.",
             "apiVersion": "2019-06-01",
