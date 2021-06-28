@@ -22,7 +22,7 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_NC6",
+            "defaultValue": "Standard_D2s_v3",
             "metadata": {
                 "description": "The size of the VM"
             }
@@ -73,7 +73,7 @@
         "nsgName": "[concat(parameters('vmName'),'-nsg-allow-ssh')]",
         "vnetName": "[concat(parameters('vmName'),'-vnet')]",
         "pipName": "[concat(parameters('vmName'),'-pip')]",
-        "nicName": "[concat(parameters('vmName'),'nic')]",
+        "nicName": "[concat(parameters('vmName'),'-nic')]",
         "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
@@ -128,7 +128,7 @@
         },
         
         {
-             "type": "Microsoft.Network/networkInterfaces",
+            "type": "Microsoft.Network/networkInterfaces",
             "comments": "Nic.",
             "apiVersion": "2020-08-01",
             "name": "[concat(parameters('vmName'),'-nic')]",
