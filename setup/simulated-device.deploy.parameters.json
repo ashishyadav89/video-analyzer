@@ -3,13 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "_artifactsLocation": {
-            "value": "https://raw.githubusercontent.com/ashishyadav89/video-analyzer/dev/ashish/setup/" // TODO: Fill in parameter value
+            "value": "https://raw.githubusercontent.com/ashishyadav89/video-analyzer/dev/ashish/setup/" 
         },
         "edgeDeviceConnectionString": {
-            "value": "" // TODO: Fill in parameter value
+            "value": "HostName=avaiothubspa.azure-devices.net;DeviceId=SpatialAnalysis;SharedAccessKey=SfN08VdgR7r5isTKHjpgMC5YhaMcDNnlop1OQ1dHCsU=" 
         },
         "vmName": {
-            "value": "Spatialanalysis1" // TODO: Fill in parameter value
+            "value": "Spatialanalysis1" 
         },
         "vmSize": {
             "value": "Standard_NC6"
@@ -18,7 +18,7 @@
             "value": "password"
         },
         "adminPasswordOrKey": {
-            "value": "12345@Million" // TODO: Fill in parameter value
+            "value": "12345@Million" 
         },
         "adminUsername": {
             "value": "avaadmin"
