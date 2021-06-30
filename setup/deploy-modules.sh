@@ -19,7 +19,8 @@
 # $REGISTRY_USER_NAME               - the user name for the container registry
 # $IOT_HUB_CONNECTION_STRING        - the IoT Hub connection string
 # $IOT_EDGE_MODULE_NAME             - the IoT avaedge module name
-#
+# $COGNITIVE_API_KEY
+# $COGNITIVE_BILLING_ENDPOINT
 #######################################################################################################
 
 # automatically install any extensions
@@ -36,8 +37,11 @@ sed -i "s@\$VIDEO_OUTPUT_FOLDER_ON_DEVICE@${VIDEO_OUTPUT_FOLDER_ON_DEVICE}@g" de
 sed -i "s@\$VIDEO_INPUT_FOLDER_ON_DEVICE@${VIDEO_INPUT_FOLDER_ON_DEVICE}@g" deployment.json
 sed -i "s@\$APPDATA_FOLDER_ON_DEVICE@${APPDATA_FOLDER_ON_DEVICE}@g" deployment.json
 
-sed -i "s@\$AVA_Cognitive_Service_Key@${Cognitive_Service_Key}@g" deployment.json
-sed -i "s@\$AVA_Cognitive_Endpoint@${Cognitive_Endpoint}@g" deployment.json
+sed -i "s@\$COGNITIVE_API_KEY@${Cognitive_Service_Key}@g" deployment.json
+sed -i "s@\$COGNITIVE_BILLING_ENDPOINT@${Cognitive_Endpoint}@g" deployment.json
+
+sed -i "s@\$CONTAINER_REGISTRY_USERNAME_myacr@${REGISTRY_USER_NAME}@g" deployment.json
+sed -i "s@\$CONTAINER_REGISTRY_PASSWORD_myacr@${REGISTRY_PASSWORD}@g" deployment.json
 
 # Add a file to build env.txt file from
 >env.txt

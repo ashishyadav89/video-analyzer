@@ -1,39 +1,47 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "metadata": {},
     "parameters": {
         "namePrefix": {
+            "defaultValue": "avatestsample",
+            "minLength": 3,
+            "maxLength": 23,
+            "type": "String",
             "metadata": {
                 "description": "Used to qualify the names of all of the resources created in this template."
-            },
-            "defaultValue": "avasample",
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 13
-        },
-        "edgeModuleName": {
-            "metadata": {
-                "description": "The edge module identity used to provision an authentication token for the edge device."
-            },
-            "defaultValue": "avaedge",
-            "type": "string"
-        },
-        "resourceTags": {
-            "type": "object",
-            "defaultValue": {
-                "sample": "azure-video-analyzer"
             }
         },
+        "PolicyType": {
+            "defaultValue": "Microsoft.VideoAnalyzer.JwtAuthentication",
+            "type": "String",
+            "metadata": {
+                "description": "Type of policy"
+            }
+        },
+        "edgeModuleName": {
+            "defaultValue": "avaedge",
+            "type": "String",
+            "metadata": {
+                "description": "The edge module identity used to provision an authentication token for the edge device."
+            }
+        },
+        "resourceTags": {
+            "defaultValue": {
+                "sample": "azure-video-analyzer-test"
+            },
+            "type": "Object"
+        },
         "baseTime": {
-            "type": "string",
-            "defaultValue": "[utcNow('u')]"
+            "defaultValue": "[utcNow('u')]",
+            "type": "String"
         }
     },
     "variables": {
         "storageAccountName": "[concat(parameters('namePrefix'),uniqueString(resourceGroup().id))]",
         "accountName": "[concat(parameters('namePrefix'),uniqueString(resourceGroup().id))]",
         "edgeModuleName": "[parameters('edgeModuleName')]",
+        "PolicyType": "[parameters('PolicyType')]",
+        "accesspolicyName": "[parameters('edgeModuleName')]",
         "tokenExpiration": {
             "expirationDate": "[dateTimeAdd(parameters('baseTime'), 'P7D', 'yyyy-MM-ddTHH:mm:ss+00:00')]"
         },
@@ -74,7 +82,7 @@
                         "storageBlobDataContributorAssignment": "[guid('Storage Blob Data Contributor',variables('managedIdentityName'))]",
                         "storageBlobDataContributorDefinitionId": "[concat(resourceGroup().id, '/providers/Microsoft.Authorization/roleDefinitions/', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
                         "readerAssignment": "[guid('Reader',variables('managedIdentityName'))]",
-                        "readerDefinitionId": "[concat(resourceGroup().id, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]"   
+                        "readerDefinitionId": "[concat(resourceGroup().id, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]"
                     },
                     "resources": [
                         {
@@ -127,10 +135,10 @@
                         {
                             "type": "Microsoft.Resources/deploymentScripts",
                             "comments": "adding a delay to allow for the role assignement to propagate through storage",
-                            "dependsOn": [ 
+                            "dependsOn": [
                                 "[variables('managedIdentityName')]",
                                 "[variables('storageAccountName')]"
-                                ],
+                            ],
                             "apiVersion": "2020-10-01",
                             "name": "managed-identity-role-assignmentComplete",
                             "location": "[resourceGroup().location]",
@@ -151,13 +159,19 @@
         },
         {
             "type": "Microsoft.Media/videoAnalyzers",
-            "comments": "The Azure Video Analyzer account",
             "apiVersion": "2021-05-01-preview",
             "name": "[variables('accountName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "deploy-storage-and-identity"
             ],
+            "tags": "[parameters('resourceTags')]",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',variables('managedIdentityName'))]": {}
+                }
+            },
             "properties": {
                 "storageAccounts": [
                     {
@@ -167,40 +181,62 @@
                         }
                     }
                 ]
-            },
-            "identity": {
-                "type": "UserAssigned",
-                "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',variables('managedIdentityName'))]": {}
-                }
-            },
-            "tags": "[parameters('resourceTags')]"
+            }
         },
         {
             "type": "Microsoft.Media/videoAnalyzers/edgeModules",
-            "comments": "",
             "apiVersion": "2021-05-01-preview",
             "name": "[concat(variables('accountName'),'/',variables('edgeModuleName'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Media/videoAnalyzers', variables('accountName'))]"
             ]
+        },
+        {
+            "type": "Microsoft.Media/videoAnalyzers/accessPolicies",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(variables('accountName'),'/',variables('accesspolicyName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Media/videoAnalyzers', variables('accountName'))]"
+            ],
+            "properties": {
+                "role": "Reader",
+                "authentication": {
+                    "@type": "[concat('#',variables('Policytype'))]",
+                    "issuers": [
+                        "https://contoso.com"
+                    ],
+                    "audiences": [
+                        "https://videoanalyzer.azure.net"
+                    ],
+                    "claims": [],
+                    "keys": [
+                        {
+                            "@type": "#Microsoft.VideoAnalyzer.RsaTokenKey",
+                            "kid": "E7572F0254CE87E9F0A35FD96DB712AA4A3D6139",
+                            "alg": "RS256",
+                            "n": "wJthuoFv/FbK5JT/V+q6vqaybccUVkTeJaUzP8sgn3cN+Hb5LBLuFcr1mH4j3Q6azpI83klfOyiYE6xcZFr+FuDUd+1l9AhkI+fmoT6hd7u0tnKbNmkRTtZRSrIMMuXxhVnGYqPewwcULZvUkNXDX+KUrBM3U28tdBMRUtDg90W0MXGsCxmUj9XCHR0NSj14BN3uJS05XhseY2Z5acGuGXwVyrGzhPqzsAw61KGtCrZbztuMxWvGYuZC2G8kxsxK+Q/ljWoF2XdX3D8yfnBVHJXaUNrNMu1ah0Hpt1TdeMtPpr1MywI0L4yHl0+eaor/6PaN4Z6vsSlyVMU2mIJsZQ==",
+                            "e": "AQAB"
+                        }
+                    ]
+                }
+            }
         }
     ],
     "outputs": {
         "accountId": {
-            "type": "string",
+            "type": "String",
             "value": "[resourceId('Microsoft.Media/videoAnalyzers', variables('accountName'))]"
         },
         "edgeModuleName": {
-            "type": "string",
+            "type": "String",
             "value": "[variables('edgeModuleName')]"
         },
         "storageAccountName": {
-            "type": "string",
+            "type": "String",
             "value": "[variables('storageAccountName')]"
         },
         "provisioningToken": {
-            "type": "string",
+            "type": "String",
             "value": "[listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', variables('accountName'), variables('edgeModuleName')),'2021-05-01-preview',variables('tokenExpiration')).token]"
         }
     }
