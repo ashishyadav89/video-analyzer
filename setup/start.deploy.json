@@ -34,13 +34,7 @@
                 "todo": "Provide an option to use SSH, this is already present in the linked template."
             }
         },
-        "useBastionHost": {
-            "metadata": {
-                "description": "If true, the template will deploy a bastion host for connecting to the simulated edge device."
-            },
-            "defaultValue": false,
-            "type": "bool"
-        },
+       
         "useExistingEdgeDevice": {
             "metadata": {
                 "description": "If true, this deployment will override the modules that are currently deployed on the specified device."
@@ -535,10 +529,8 @@
                     },
                     "edgeDeviceConnectionString": {
                         "value": "[if(parameters('useExistingEdgeDevice'),'',reference('register-edge-device-on-hub','2020-10-01').outputs.scriptOutputs.value.deviceConnectionString)]"
-                    },
-                    "useBastion": {
-                        "value": "[parameters('useBastionHost')]"
                     }
+                   
                 }
             }
         },      // Depolyment 7 (deploy-simulated-edge-device)  using linked template : END
