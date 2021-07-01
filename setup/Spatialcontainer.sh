@@ -26,21 +26,36 @@ sudo apt-get install -y docker-ce nvidia-docker2
 
 sudo systemctl restart docker
 
-# Install Azure IOT Edge
+# create the local group and user for the edge module
+# these are mapped from host to container in the deployment manifest in the desire properties for the module
+sudo groupadd -g 1010 localedgegroup
+sudo useradd --home-dir /home/localedgeuser --uid 1010 --gid 1010 localedgeuser
+sudo mkdir -p /home/localedgeuser
 
-# curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > ./microsoft-prod.list
+# create folders to be used by the rtspsim module
+sudo mkdir -p /home/localedgeuser/samples
+sudo mkdir -p /home/localedgeuser/samples/input
 
-# sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
 
-# curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 
-# sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
+# give the local user access
+sudo chown -R localedgeuser:localedgegroup /home/localedgeuser/
 
-# sudo apt-get update
+# set up folders for use by the Video Analyzer module
+# these are mounted in the deployment manifest
 
-# sudo apt-get install iotedge=1.0.9* libiothsm-std=1.0.9*
+# !NOTE! these folder locations are must match the folders used in `deploy-modules.sh` and ultimately the IoT edge deployment manifest
 
-# sed -i  's/<ADD DEVICE CONNECTION STRING HERE>/fhgfhfkfffjg/g' /etc/iotedge/config.yaml
+# general app data for the module
+sudo mkdir -p /var/lib/videoanalyzer 
+sudo chown -R localedgeuser:localedgegroup /var/lib/videoanalyzer/
+sudo mkdir -p /var/lib/videoanalyzer/tmp/ 
+sudo chown -R localedgeuser:localedgegroup /var/lib/videoanalyzer/tmp/
+sudo mkdir -p /var/lib/videoanalyzer/logs
+sudo chown -R /localedgeuser:localedgegroup /var/lib/videoanalyzer/logs
 
-# sudo systemctl restart iotedge
+# output folder for file sink
+sudo mkdir -p /var/media
+sudo chown -R localedgeuser:localedgegroup /var/media/
+
 
