@@ -22,7 +22,7 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard NC6_Promo",
+            "defaultValue": "Standard_NC6_Promo",
             "metadata": {
                 "description": "The size of the VM"
             }
@@ -202,6 +202,26 @@
                 }
             }
         },
+        {
+                            "type": "Microsoft.Resources/deploymentScripts",
+                            "comments": "adding a delay to allow for the role assignement to propagate through storage",
+                            "dependsOn": [
+                                "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+                               
+                            ],
+                            "apiVersion": "2020-10-01",
+                            "name": "managed-identity-role-assignmentComplete",
+                            "location": "[resourceGroup().location]",
+                            "kind": "AzurePowerShell",
+                            "properties": {
+                                "azPowerShellVersion": "5.0",
+                                "forceUpdateTag": "1.0",
+                                "scriptContent": "Start-Sleep -s 60",
+                                "timeout": "PT30M",
+                                "cleanupPreference": "Always",
+                                "retentionInterval": "PT1H"
+                            }
+                        },
         {
              "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2015-06-15",
