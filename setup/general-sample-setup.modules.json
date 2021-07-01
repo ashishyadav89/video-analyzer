@@ -9,7 +9,7 @@
               "minDockerVersion": "v1.25",
               "loggingOptions": "",
               "registryCredentials": {
-                "$CONTAINER_REGISTRY_USERNAME_myacr": {
+                "avatest": {
                   "username": "avatest",
                   "password": "hgiQoTHvwYXn=kvjNihB7X1dN5O29ERO",
                   "address": "avatest.azurecr.io"
@@ -75,7 +75,7 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "$CONTAINER_REGISTRY_USERNAME_myacr.azurecr.io/video-downloader:latest",
+                "image": "avatest.azurecr.io/video-downloader:latest",
                 "createOptions": "{\"ExposedPorts\":{\"5678/tcp\":{}},\"HostConfig\":{\"Binds\":[\"$VIDEO_INPUT_FOLDER_ON_DEVICE:/live/mediaServer/media\"],\"PortBindings\":{\"5678/tcp\":[{\"HostPort\":\"5678\"}]}}}"
               }
             },
