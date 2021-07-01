@@ -216,7 +216,7 @@
                             "properties": {
                                 "azPowerShellVersion": "5.0",
                                 "forceUpdateTag": "1.0",
-                                "scriptContent": "Start-Sleep -s 60",
+                                "scriptContent": "Start-Sleep -s 30",
                                 "timeout": "PT30M",
                                 "cleanupPreference": "Always",
                                 "retentionInterval": "PT1H"
