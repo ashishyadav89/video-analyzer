@@ -24,7 +24,9 @@ sudo apt-get update
 
 sudo apt-get install -y docker-ce nvidia-docker2
 
-# sudo systemctl restart docker
+sudo systemctl restart docker
+
+sudo systemctl restart iotedge
 
 # create the local group and user for the edge module
 # these are mapped from host to container in the deployment manifest in the desire properties for the module
