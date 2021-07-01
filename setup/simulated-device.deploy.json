@@ -22,7 +22,7 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_D2s_v3",
+            "defaultValue": "Standard NC6_Promo",
             "metadata": {
                 "description": "The size of the VM"
             }
