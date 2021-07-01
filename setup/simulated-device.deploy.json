@@ -229,7 +229,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                  "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
-                 "[concat('Microsoft.Resources/deploymentScripts', 'wait_time')]"
+                 "[concat('Microsoft.Resources/deploymentScripts/', 'wait_time')]"
                  
                              ],
             "properties": {
