@@ -87,7 +87,8 @@
         }
     },
     "variables": {
-        "_artifactsLocation": "https://raw.githubusercontent.com/ashishyadav89/video-analyzer/dev/ashish/setup/",
+        "_artifactsLocation": "https://templates57.blob.core.windows.net/template/",
+        "_artifactsLocationSasToken": "sp=r&st=2021-07-05T05:55:36Z&se=2021-07-05T13:55:36Z&spr=https&sv=2020-02-10&sr=c&sig=W0K4s5d5WxwB2qrA9Gd426GUR0VqZYP2TQrehnOkWzM%3D",
         "managedIdentityName": "[concat(parameters('namePrefix'),'-deployment-identity-',uniqueString(parameters('resourceGroup')))]",
         "managedIdentityId": "[concat(subscription().id,'/resourceGroups/',parameters('resourceGroup'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', variables('managedIdentityName'))]",
         "simulatedDeviceName": "[concat(parameters('namePrefix'),'-iot-edge-device')]",
@@ -288,7 +289,7 @@
             ],
             "properties": {
                 "templateLink": {
-                    "uri": "[uri(variables('_artifactsLocation'),'video-analyzer.deploy.json')]"               // linked template url 
+                    "uri": "[concat(variables('_artifactsLocation'),'video-analyzer.deploy.json',variables('_artifactsLocationSasToken'))]"               // linked template url 
                 },
                 "mode": "Incremental",
                 "parameters": {
@@ -311,7 +312,7 @@
             ],
             "properties": {
                 "templateLink": {
-                    "uri": "[uri(variables('_artifactsLocation'),'iot.deploy.json')]"
+                    "uri": "[concat(variables('_artifactsLocation'),'iot.deploy.json',variables('_artifactsLocationSasToken'))]"
                 },
                 "mode": "Incremental",
                 "parameters": {
@@ -353,6 +354,7 @@
                     "managedIdentityId": { "value": "[variables('managedIdentityId')]" },
                     "hubName": { "value": "[reference('deploy-iot-resources').outputs.hubName.value]" },
                     "simulatedDeviceName": { "value": "[variables('simulatedDeviceName')]" },
+                    "_artifactsLocationSasToken":{"value":"[variables('_artifactsLocationSasToken')]"},
                     "resourceTags": { "value": "[parameters('resourceTags')]" }
                 },
                 "template": {            // Nested  template start 
@@ -360,6 +362,7 @@
                     "contentVersion": "1.0.0.0",
                     "parameters": {
                         "_artifactsLocation": { "type": "string" },
+                        "_artifactsLocationSasToken": {"type":"string"},
                         "baseTime": { "type": "string" },
                         "managedIdentityId": { "type": "string" },
                         "hubName": { "type": "string" },
@@ -383,7 +386,7 @@
                             "properties": {
                                 "forceUpdateTag": "[parameters('baseTime')]",
                                 "azCliVersion": "2.20.0",
-                                "primaryScriptUri": "[uri(parameters('_artifactsLocation'),'iot-edge-setup.sh')]",
+                                "primaryScriptUri": "[concat(parameters('_artifactsLocation'),'iot-edge-setup.sh',parameters('_artifactsLocationSasToken'))]",
                                 "environmentVariables": [
                                     {
                                         "name": "IOTHUB",
@@ -511,7 +514,7 @@
             "resourceGroup": "[parameters('resourceGroup')]",
             "properties": {
                 "templateLink": {            
-                    "uri": "[uri(variables('_artifactsLocation'),'simulated-device.deploy.json')]"
+                    "uri": "[concat(variables('_artifactsLocation'),'simulated-device.deploy.json',variables('_artifactsLocationSasToken'))]"
                 },
                 "mode": "Incremental",
                 "parameters": {
@@ -570,14 +573,14 @@
                             "properties": {
                                 "forceUpdateTag": "[parameters('baseTime')]",
                                 "azCliVersion": "2.20.0",
-                                "primaryScriptUri": "[uri(variables('_artifactsLocation'),'deploy-modules.sh')]",
+                                "primaryScriptUri": "[concat(variables('_artifactsLocation'),'deploy-modules.sh',variables('_artifactsLocationSasToken'))]",
                                 "supportingScriptUris": [
-                                    "[uri(variables('_artifactsLocation'),concat(parameters('scenario'),'.modules.json'))]"
+                                    "[uri(variables('_artifactsLocation'),concat(parameters('scenario'),'.modules.json',variables('_artifactsLocationSasToken')))]"
                                 ],
                                 "environmentVariables": [
                                     {
                                         "name": "DEPLOYMENT_MANIFEST_TEMPLATE_URL",
-                                        "value": "[uri(variables('_artifactsLocation'),concat(parameters('scenario'),'.modules.json'))]"
+                                        "value": "[uri(variables('_artifactsLocation'),concat(parameters('scenario'),'.modules.json',variables('_artifactsLocationSasToken')))]"
                                     },
                                     {
                                         "name": "PROVISIONING_TOKEN",
@@ -651,7 +654,143 @@
                     "outputs": {}
                 }
             }
-        }
+        }    
+      /*  {
+          "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "name": "AppServicePlanDeployment",
+            "dependsOn": [
+                "[]",
+                "AzurePerceptDeployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.Web/serverfarms",
+                            "apiVersion": "2018-02-01",
+                            "name": "[variables('appServiceName')]",
+                            "location": "[variables('location')]",
+                            "sku": {
+                                "name": "S1",
+                                "tier": "Standard",
+                                "size": "S1",
+                                "family": "S",
+                                "capacity": 1
+                            },
+                            "kind": "app",
+                            "tags": {
+                                "type": "[variables('applicationType')]"
+                            },
+                            "properties": {
+                                "perSiteScaling": false,
+                                "maximumElasticWorkerCount": 1,
+                                "isSpot": false,
+                                "reserved": false,
+                                "isXenon": false,
+                                "hyperV": false,
+                                "targetWorkerCount": 0,
+                                "targetWorkerSizeId": 0
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Web/sites",
+                            "apiVersion": "2018-11-01",
+                            "name": "[variables('webappName')]",
+                            "location": "[variables('location')]",
+                            "dependsOn": [
+                                "[variables('appServiceName')]"
+                            ],
+                            "tags": {
+                                "edgeAIAppDeployment": "people-tracking-app",
+                                "type": "[variables('applicationType')]"
+                            },
+                            "kind": "app",
+                            "properties": {
+                                "enabled": true,
+                                "hostNameSslStates": [
+                                    {
+                                        "name": "[concat(variables('webappName'), '.azurewebsites.net')]",
+                                        "sslState": "Disabled",
+                                        "hostType": "Standard"
+                                    },
+                                    {
+                                        "name": "[concat(variables('webappName'), '.scm.azurewebsites.net')]",
+                                        "sslState": "Disabled",
+                                        "hostType": "Repository"
+                                    }
+                                ],
+                                "serverFarmId": "[concat(subscription().id,'/resourceGroups/',variables('resourceGroupAMS'),'/providers/Microsoft.Web/serverfarms/', variables('appServiceName'))]",
+                                "reserved": false,
+                                "isXenon": false,
+                                "hyperV": false,
+                                "siteConfig": {},
+                                "scmSiteAlsoStopped": false,
+                                "clientAffinityEnabled": true,
+                                "clientCertEnabled": false,
+                                "hostNamesDisabled": false,
+                                "containerSize": 0,
+                                "dailyMemoryTimeQuota": 0,
+                                "httpsOnly": false,
+                                "redundancyMode": "None"
+                            },
+                            "resources": [
+                                {
+                                    "type": "config",
+                                    "apiVersion": "2018-11-01",
+                                    "name": "web",
+                                    "dependsOn": [
+                                        "[variables('webappName')]",
+                                        "MSDeploy"
+                                    ],
+                                    "properties": {
+                                        "webSocketsEnabled": true,
+                                        "alwaysOn": true
+                                    }
+                                },
+                                {
+                                    "type": "config",
+                                    "apiVersion": "2018-11-01",
+                                    "name": "appsettings",
+                                    "dependsOn": [
+                                        "[variables('webappName')]",
+                                        "MSDeploy"
+                                    ],
+                                    "properties": {
+                                        "STORAGE_BLOB_ACCOUNT": "[variables('storageAccountName')]",
+                                        "PASSWORD": "[parameters('password')]",
+                                        "WEBSITE_HTTPLOGGING_RETENTION_DAYS": "7",
+                                        "WEBSITE_NODE_DEFAULT_VERSION": "10.15.2",
+                                        "AMP_STREAMING_URL": "[reference('AzurePerceptDeployment').outputs.STREAMING_URL.value]",
+                                        "IOT_HUB_NAME": "[parameters('existingIotHubName')]",
+                                        "STORAGE_BLOB_SHARED_ACCESS_SIGNATURE": "[reference('ResourcesDeployment').outputs.sasToken.value]"
+                                    }
+                                },
+                                {
+                                    "type": "Extensions",
+                                    "apiVersion": "2018-11-01",
+                                    "name": "MSDeploy",
+                                    "location": "[variables('location')]",
+                                    "dependsOn": [
+                                        "[variables('webappName')]"
+                                    ],
+                                    "properties": {
+                                        "packageUri": "https://unifiededgescenarios.blob.core.windows.net/arm-template/azure-percept/latest/people-detection-app.zip"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "resourceGroup": "[parameters('resourceGroup')]"
+
+        } */
     ],
     "outputs": {
         "app-settings": {
