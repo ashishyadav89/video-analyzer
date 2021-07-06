@@ -88,7 +88,7 @@
     },
     "variables": {
         "_artifactsLocation": "https://templates57.blob.core.windows.net/template/",
-        "_artifactsLocationSasToken": "sp=r&st=2021-07-05T05:55:36Z&se=2021-07-05T13:55:36Z&spr=https&sv=2020-02-10&sr=c&sig=W0K4s5d5WxwB2qrA9Gd426GUR0VqZYP2TQrehnOkWzM%3D",
+        "_artifactsLocationSasToken": "?sp=r&st=2021-07-06T07:40:22Z&se=2021-07-30T15:40:22Z&sv=2020-02-10&sr=c&sig=yUj0VxROGhGG3mYNx9zjlYzxJ0SLFKGvMX7sJ8OTsJ0%3D",
         "managedIdentityName": "[concat(parameters('namePrefix'),'-deployment-identity-',uniqueString(parameters('resourceGroup')))]",
         "managedIdentityId": "[concat(subscription().id,'/resourceGroups/',parameters('resourceGroup'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', variables('managedIdentityName'))]",
         "simulatedDeviceName": "[concat(parameters('namePrefix'),'-iot-edge-device')]",
@@ -522,6 +522,9 @@
                 "parameters": {
                     "_artifactsLocation": {
                         "value": "[variables('_artifactsLocation')]"
+                    },
+                    "_artifactsLocationSasToken":{
+                        "value":"[variables('_artifactsLocationSasToken')]"
                     },
                     "vmName": {
                         "value": "[variables('simulatedDeviceName')]"
