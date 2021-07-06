@@ -87,7 +87,7 @@
         }
     },
     "variables": {
-        "_artifactsLocation": "https://templates57.blob.core.windows.net/template/",
+        "_artifactsLocation": "https://templates57.blob.core.windows.net/template/setup",
         "_artifactsLocationSasToken": "?sp=r&st=2021-07-06T07:40:22Z&se=2021-07-30T15:40:22Z&sv=2020-02-10&sr=c&sig=yUj0VxROGhGG3mYNx9zjlYzxJ0SLFKGvMX7sJ8OTsJ0%3D",
         "managedIdentityName": "[concat(parameters('namePrefix'),'-deployment-identity-',uniqueString(parameters('resourceGroup')))]",
         "managedIdentityId": "[concat(subscription().id,'/resourceGroups/',parameters('resourceGroup'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', variables('managedIdentityName'))]",
@@ -386,9 +386,7 @@
                             "properties": {
                                 "forceUpdateTag": "[parameters('baseTime')]",
                                 "azCliVersion": "2.20.0",
-                                "primaryScriptUri": "[concat(
-                                    
-                                    parameters('_artifactsLocation'),'iot-edge-setup.sh',parameters('_artifactsLocationSasToken'))]",
+                                "primaryScriptUri": "[concat(parameters('_artifactsLocation'),'iot-edge-setup.sh',parameters('_artifactsLocationSasToken'))]",
                                 "environmentVariables": [
                                     {
                                         "name": "IOTHUB",
