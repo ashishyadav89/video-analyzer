@@ -87,8 +87,8 @@
         }
     },
     "variables": {
-        "_artifactsLocation": "https://templates57.blob.core.windows.net/template/setup",
-        "_artifactsLocationSasToken": "?sp=r&st=2021-07-06T07:40:22Z&se=2021-07-30T15:40:22Z&sv=2020-02-10&sr=c&sig=yUj0VxROGhGG3mYNx9zjlYzxJ0SLFKGvMX7sJ8OTsJ0%3D",
+        "_artifactsLocation": "https://storageavanalyzer.blob.core.windows.net/avaedgesetup/",
+        "_artifactsLocationSasToken": "?sp=r&st=2021-07-06T09:20:26Z&se=2021-07-30T17:20:26Z&spr=https&sv=2020-08-04&sr=c&sig=uHar81Fg3yqHRoFR9ANWVa3lbzu4vjAzGxWupJCBRhc%3D",
         "managedIdentityName": "[concat(parameters('namePrefix'),'-deployment-identity-',uniqueString(parameters('resourceGroup')))]",
         "managedIdentityId": "[concat(subscription().id,'/resourceGroups/',parameters('resourceGroup'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', variables('managedIdentityName'))]",
         "simulatedDeviceName": "[concat(parameters('namePrefix'),'-iot-edge-device')]",
