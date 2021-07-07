@@ -92,6 +92,7 @@
         "managedIdentityName": "[concat(parameters('namePrefix'),'-deployment-identity-',uniqueString(parameters('resourceGroup')))]",
         "managedIdentityId": "[concat(subscription().id,'/resourceGroups/',parameters('resourceGroup'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', variables('managedIdentityName'))]",
         "simulatedDeviceName": "[concat(parameters('namePrefix'),'-iot-edge-device')]",
+        "VMResourceGroup" :"[concat(parameters('resourceGroup'),'VM')]",
         "deviceName": "[if(parameters('useExistingEdgeDevice'),parameters('existingDeviceName'),variables('simulatedDeviceName'))]"
 
     },
@@ -104,6 +105,16 @@
             "location": "[deployment().location]",
             "properties": {},
             "tags": "[parameters('resourceTags')]"
+        },
+        {     // Create a resource Group for VM
+            "type": "Microsoft.Resources/resourceGroups", 
+            "apiVersion": "2020-06-01",
+            "name": "[variables('VMResourceGroup')]",
+            "comments": "The primary resource group that will be used for new resources.",
+            "location": "[deployment().location]",
+            "properties": {},
+            "tags": "[parameters('resourceTags')]"
+            
         },
         {           // Depolyment 1 (deploy-managed-identity): Start 
             "type": "Microsoft.Resources/deployments",
@@ -171,7 +182,8 @@
             "comments": "",
             "resourceGroup": "[parameters('resourceGroup')]",
             "dependsOn": [
-                "[parameters('resourceGroup')]"
+                "[parameters('resourceGroup')]",
+                "[variables('VMResourceGroup')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -511,7 +523,7 @@
                 "deploy-cognitive-services",
                 "[parameters('resourceGroup')]"
             ],
-            "resourceGroup": "[parameters('resourceGroup')]",
+            "resourceGroup": "[variables('VMResourceGroup')]",
             "properties": {
                 "templateLink": {            
                     "uri": "[concat(variables('_artifactsLocation'),'simulated-device.deploy.json',variables('_artifactsLocationSasToken'))]"
@@ -549,6 +561,7 @@
                 "deploy-video-analyzer-resources",
                 "deploy-simulated-edge-device",
                 "[parameters('resourceGroup')]",
+                "[variables('VMResourceGroup')]",
                 "deploy-container-registry"
             ],
             "resourceGroup": "[parameters('resourceGroup')]",
