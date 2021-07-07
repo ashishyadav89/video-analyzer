@@ -450,7 +450,7 @@
                      "parameters": {
                                        "cognitiveServiceName": {
       "type": "string",
-      "defaultValue": "[concat('CognitiveService-', uniqueString(resourceGroup().id))]",
+      "defaultValue": "[concat('CognitiveService_', uniqueString(resourceGroup().id))]",
       "metadata": {
         "description": "That name is the name of our application. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)"
       }
