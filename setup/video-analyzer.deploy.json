@@ -192,30 +192,57 @@
             ]
         },
         {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2020-10-01",
+            "name": "GenerateJWTToken",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'deploy-storage-and-identity')]"
+            ],
+            "kind": "AzureCLI",
+            "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                 "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',variables('managedIdentityName'))]": {}
+                }
+            },
+            "properties": {
+                "forceUpdateTag": "1",
+                "containerSettings": {},
+                "azCliVersion": "2.0.80",
+                "environmentVariables": [],
+                "primaryScriptUri": "https://storageavanalyzer.blob.core.windows.net/avaedgesetup/generate-token.sh",
+                "timeout": "PT10M",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+            }
+        },
+        {
             "type": "Microsoft.Media/videoAnalyzers/accessPolicies",
             "apiVersion": "2021-05-01-preview",
             "name": "[concat(variables('accountName'),'/',variables('accesspolicyName'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Media/videoAnalyzers', variables('accountName'))]"
+                "[resourceId('Microsoft.Media/videoAnalyzers', variables('accountName'))]",
+                "[resourceId('Microsoft.Resources/deploymentScripts', 'GenerateJWTToken')]"
             ],
             "properties": {
                 "role": "Reader",
                 "authentication": {
                     "@type": "[concat('#',variables('Policytype'))]",
                     "issuers": [
-                        "https://contoso.com"
+                        "[reference('GenerateJWTToken').outputs.Issuer]"
                     ],
                     "audiences": [
-                        "https://videoanalyzer.azure.net"
+                        "[reference('GenerateJWTToken').outputs.Audience]"
                     ],
                     "claims": [],
                     "keys": [
                         {
-                            "@type": "#Microsoft.VideoAnalyzer.RsaTokenKey",
-                            "kid": "E7572F0254CE87E9F0A35FD96DB712AA4A3D6139",
-                            "alg": "RS256",
-                            "n": "wJthuoFv/FbK5JT/V+q6vqaybccUVkTeJaUzP8sgn3cN+Hb5LBLuFcr1mH4j3Q6azpI83klfOyiYE6xcZFr+FuDUd+1l9AhkI+fmoT6hd7u0tnKbNmkRTtZRSrIMMuXxhVnGYqPewwcULZvUkNXDX+KUrBM3U28tdBMRUtDg90W0MXGsCxmUj9XCHR0NSj14BN3uJS05XhseY2Z5acGuGXwVyrGzhPqzsAw61KGtCrZbztuMxWvGYuZC2G8kxsxK+Q/ljWoF2XdX3D8yfnBVHJXaUNrNMu1ah0Hpt1TdeMtPpr1MywI0L4yHl0+eaor/6PaN4Z6vsSlyVMU2mIJsZQ==",
-                            "e": "AQAB"
+                            "@type": "[reference('GenerateJWTToken').outputs.KeyType]",
+                            "kid": "[reference('GenerateJWTToken').outputs.KeyId]",
+                            "alg": "[reference('GenerateJWTToken').outputs.Algorithm]",
+                            "n": "[reference('GenerateJWTToken').outputs.RSAKeyModulus]",
+                            "e": "[reference('GenerateJWTToken').outputs.RSAKeyExponent]"
                         }
                     ]
                 }
