@@ -13,7 +13,7 @@
         },
         "virtualMachineSize": {
             "type": "string",
-            "defaultValue": "Standard_NC6_Promo"
+            "defaultValue": "Standard_NC4as_T4_v3"
         }
         
         
@@ -150,7 +150,7 @@
             "location": "[resourceGroup().location]",
             "tags": {},
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
                 "[resourceId('Microsoft.Compute/disks', variables('diskname'))]"
             ],
             "properties": {
@@ -162,24 +162,18 @@
                         "createOption": "attach",
                         "osType": "Linux",
                         "managedDisk": {
-                            "id": "[resourceId('Microsoft.Compute/disks', variables('vnetName'))]"
+                            "id": "[resourceId('Microsoft.Compute/disks', variables('diskname'))]"
                         }
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('diskname'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
                         }
                     ]
                 },
-                "osProfile": {
-                   "computerName": "[parameters('vmName')]",
-                    "adminUsername": "root",
-                    "adminPassword": "p@ssw0rd"
-                
-                },
-                "diagnosticsProfile": {
+                    "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true
                     }
