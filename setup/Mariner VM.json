@@ -27,7 +27,7 @@
         "diskname": "[concat(parameters('vmName'),'-MarnierDisk')]"
     },
     "resources": [
-            {              // Create manged disk from the VHD File
+            {              // Create managed disk from the VHD File
             "type": "Microsoft.Compute/disks",
             "apiVersion": "2020-12-01",
             "name": "[variables('diskname')]",
@@ -40,15 +40,15 @@
                 "osType": "Linux",
                 "creationData": {
                     "createOption": "import",
-                    "sourceUri": "https://hcitestdrive.blob.core.windows.net/perceptworkloadvhd/AP-AzSHCI-VHD3-1.0.20210512.1700.vhd",
-                    "storageAccountId": "/subscriptions/7c9469c0-29ac-424a-85ab-d01f2cea1c38/resourceGroups/rg-HCITestDrive/providers/Microsoft.Storage/storageAccounts/hcitestdrive"
+                    "sourceUri": "https://storageavanalyzer.blob.core.windows.net/marinerimage/AP-AzSHCI-VHD3-1.0.20210512.1700.vhd" ,
+                    "storageAccountId": "/subscriptions/7c9469c0-29ac-424a-85ab-d01f2cea1c38/resourceGroups/rg-percept-testdrive/providers/Microsoft.Storage/storageAccounts/storageavanalyzer"
                 },
                 "diskSizeGB": "1024",
                 "hyperVGeneration": "V2",
                 "networkAccessPolicy": "AllowALL"
             }
             },
-        {
+        {          // Create NIC
             "type": "Microsoft.Network/networkInterfaces",
             "comments": "Nic.",
             "apiVersion": "2020-08-01",
@@ -81,7 +81,7 @@
                 }
             }
         },
-        {
+        {   // Create NSG
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-08-01",
             "name": "[variables('nsgName')]",
@@ -105,7 +105,7 @@
             },
             "tags": "[parameters('resourceTag')]"
         },
-        {
+        {   // Create Virtual Network
             "type": "Microsoft.Network/virtualNetworks",
             "comments": "This vnet will host the IoT Edge device.",
             "apiVersion": "2019-06-01",
@@ -129,7 +129,7 @@
             },
             "tags": "[parameters('resourceTag')]"
         },       
-        {
+        { // Create a standard public IP address
             "type": "Microsoft.Network/publicIpAddresses",
             "comments": "This is the public IP address to connect to the VM.",
             "apiVersion": "2019-06-01",
@@ -143,7 +143,7 @@
             },
             "tags": "[parameters('resourceTag')]"
         },
-        {
+        {   // Create a VM From the Managed Disk
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-03-01",
             "name": "[parameters('VMName')]",

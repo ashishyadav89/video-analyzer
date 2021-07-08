@@ -238,9 +238,9 @@
                     "claims": [],
                     "keys": [
                         {
-                            "@type": "[reference('GenerateJWTToken').outputs.KeyType]",
+                            "@type": "#Microsoft.VideoAnalyzer.RsaTokenKey",
                             "kid": "[reference('GenerateJWTToken').outputs.KeyId]",
-                            "alg": "[reference('GenerateJWTToken').outputs.Algorithm]",
+                            "alg": "RS256",
                             "n": "[reference('GenerateJWTToken').outputs.RSAKeyModulus]",
                             "e": "[reference('GenerateJWTToken').outputs.RSAKeyExponent]"
                         }
