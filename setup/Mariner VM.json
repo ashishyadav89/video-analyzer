@@ -5,9 +5,11 @@
          "vmName": {
             "type": "String"
                  },
-        "resourceTag": {
-            "type": "string",
-            "defaultValue": "Mariner-test_vm"
+       "resourceTag": {
+            "type": "object",
+            "defaultValue": {
+                "sample": "azure-video-analyzer"
+            }
         },
         "virtualMachineSize": {
             "type": "string",
@@ -30,7 +32,7 @@
             "apiVersion": "2020-12-01",
             "name": "[variables('diskname')]",
             "location": "[resourceGroup().location]",
-            "tags": "[parameters('resourceTag')]",
+           
             "sku": {
                 "name": "StandardSSD_LRS"
             },
@@ -38,8 +40,8 @@
                 "osType": "Linux",
                 "creationData": {
                     "createOption": "import",
-                    "sourceUri": "https://hcitestdrive.blob.core.windows.net/perceptworkloadvhd/AP-AzSHCI-VHD3-1.0.20210512.1700.vhd"
-                    
+                    "sourceUri": "https://hcitestdrive.blob.core.windows.net/perceptworkloadvhd/AP-AzSHCI-VHD3-1.0.20210512.1700.vhd",
+                    "storageAccountId": "/subscriptions/7c9469c0-29ac-424a-85ab-d01f2cea1c38/resourceGroups/rg-HCITestDrive/providers/Microsoft.Storage/storageAccounts/hcitestdrive"
                 },
                 "diskSizeGB": "1024",
                 "hyperVGeneration": "V2",
@@ -51,7 +53,6 @@
             "comments": "Nic.",
             "apiVersion": "2020-08-01",
             "name": "[variables('nicName')]",
-            "tags": "[parameters('resourceTag')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
@@ -126,7 +127,7 @@
                   
                 ]
             },
-            "tags": "[parameters('resourceTag')]",
+            "tags": "[parameters('resourceTag')]"
         },       
         {
             "type": "Microsoft.Network/publicIpAddresses",
@@ -140,14 +141,14 @@
             "properties": {
                 "publicIPAllocationMethod": "Static"
             },
-            "tags": "[parameters('resourceTag')]",
+            "tags": "[parameters('resourceTag')]"
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-03-01",
             "name": "[parameters('VMName')]",
             "location": "[resourceGroup().location]",
-            "tags": "[parameters('resourceTag')]",
+            "tags": {},
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
                 "[resourceId('Microsoft.Compute/disks', variables('diskname'))]"
